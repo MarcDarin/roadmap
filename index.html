@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marc-Darin — Roadmap 9 Semaines</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #7c5cfc;
+    --accent2: #00e5a0;
+    --accent3: #ff6b35;
+    --text: #e8e8f0;
+    --muted: #6b6b88;
+    --done: #00e5a0;
+    --pending: #7c5cfc;
+    --today: #ff6b35;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 48px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .header-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-tag::before {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: var(--accent2);
+    display: inline-block;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  h1 span.highlight {
+    color: var(--accent);
+  }
+
+  h1 span.highlight2 {
+    color: var(--accent2);
+  }
+
+  .header-sub {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 480px;
+  }
+
+  /* Progress global */
+  .global-progress {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent2);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .progress-bar-wrap {
+    grid-column: 1 / -1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  /* Week blocks */
+  .phase-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .phase-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .phase-label .phase-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .week-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .week-card:hover {
+    border-color: var(--accent);
+  }
+
+  .week-card.active {
+    border-color: var(--today);
+    box-shadow: 0 0 0 1px var(--today)22;
+  }
+
+  .week-card.completed {
+    border-color: var(--done)44;
+    opacity: 0.75;
+  }
+
+  .week-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+
+  .week-header:hover {
+    background: var(--surface2);
+  }
+
+  .week-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    min-width: 60px;
+    text-transform: uppercase;
+  }
+
+  .week-title {
+    flex: 1;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .week-badge {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .badge-active { background: var(--today)22; color: var(--today); border: 1px solid var(--today)44; }
+  .badge-done { background: var(--done)22; color: var(--done); border: 1px solid var(--done)44; }
+  .badge-soon { background: var(--accent)22; color: var(--accent); border: 1px solid var(--accent)44; }
+
+  .week-progress-mini {
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .chevron {
+    color: var(--muted);
+    transition: transform 0.2s;
+    font-size: 12px;
+  }
+
+  .week-card.open .chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Tasks */
+  .week-tasks {
+    display: none;
+    padding: 0 24px 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .week-card.open .week-tasks {
+    display: block;
+  }
+
+  .task-group-title {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 18px 0 10px;
+  }
+
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border)88;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .task-item:last-child {
+    border-bottom: none;
+  }
+
+  .task-check {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    background: transparent;
+  }
+
+  .task-item.done .task-check {
+    background: var(--done);
+    border-color: var(--done);
+  }
+
+  .task-item.done .task-check::after {
+    content: '✓';
+    font-size: 11px;
+    color: #000;
+    font-weight: 700;
+  }
+
+  .task-item.done .task-text {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+
+  .task-text {
+    font-size: 13px;
+    line-height: 1.5;
+    flex: 1;
+    color: var(--text);
+  }
+
+  .task-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 99px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .tag-learn { background: var(--accent)22; color: var(--accent); }
+  .tag-build { background: #ff6b3522; color: var(--accent3); }
+  .tag-apply { background: var(--done)22; color: var(--done); }
+  .tag-certif { background: #f0c03522; color: #f0c035; }
+
+  /* Resources */
+  .resources-section {
+    margin-top: 8px;
+    padding: 14px 16px;
+    background: var(--surface2);
+    border-radius: 8px;
+    border-left: 2px solid var(--accent);
+  }
+
+  .resources-title {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .resource-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 4px 0;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .resource-link:hover { color: var(--accent2); }
+
+  .resource-link::before {
+    content: '→';
+    color: var(--accent);
+    font-size: 10px;
+  }
+
+  /* Anti-procrastination footer */
+  .motivation-bar {
+    margin-top: 48px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .motivation-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+  }
+
+  .motivation-text {
+    flex: 1;
+  }
+
+  .motivation-text strong {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--accent2);
+  }
+
+  .motivation-text span {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .today-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2)66);
+    border: none;
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s, opacity 0.15s;
+    white-space: nowrap;
+  }
+
+  .today-btn:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+  }
+
+  /* Animations */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .global-progress { grid-template-columns: 1fr 1fr; }
+    .week-header { padding: 14px 16px; }
+    .week-tasks { padding: 0 16px 16px; }
+    .motivation-bar { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-tag">Marc-Darin Twishime — Plan 9 semaines</div>
+    <h1>De <span class="highlight">Étudiant</span><br>à <span class="highlight2">Consultant AI</span></h1>
+    <p class="header-sub">Roadmap complète : AI Automation Consultant + Data Analyst Remote SaaS. Coche chaque tâche. Reste constant.</p>
+  </div>
+
+  <!-- Stats globales -->
+  <div class="global-progress">
+    <div class="stat">
+      <div class="stat-value" id="stat-done">0</div>
+      <div class="stat-label">Tâches complétées</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-total" style="color:var(--muted)">0</div>
+      <div class="stat-label">Tâches totales</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-pct" style="color:var(--accent)">0%</div>
+      <div class="stat-label">Progression</div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="global-bar"></div>
+    </div>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="phase-label">
+    <div class="phase-dot" style="background:var(--accent)"></div>
+    Phase 1 — Fondations (S1-S3)
+  </div>
+
+  <!-- Semaine 1 -->
+  <div class="week-card" id="week-1">
+    <div class="week-header" onclick="toggleWeek('week-1')">
+      <span class="week-num">S01</span>
+      <span class="week-title">Setup & Cloud Foundations</span>
+      <span class="week-badge badge-active">En cours</span>
+      <span class="week-progress-mini" id="prog-week-1">0/7</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="week-tasks">
+      <div class="task-group-title">🔧 Setup administratif</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Créer compte AWS Educate avec email étudiant (aws.amazon.com/education/awseducate)</div>
+        <span class="task-tag tag-certif">Certif</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Activer GitHub Student Developer Pack (education.github.com/pack)</div>
+        <span class="task-tag tag-certif">Certif</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Créer profil LinkedIn optimisé : titre "AI Automation & Data Consultant"</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-group-title">📚 Apprentissage</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Démarrer AWS Cloud Practitioner — modules 1 à 3 (Cloud Concepts, Security, Technology)</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Regarder "n8n Crash Course" de Leon van Zyl sur YouTube (2-3h)</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Créer compte n8n Cloud (gratuit) et faire les 3 premiers tutoriels officiels</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Rejoindre community.n8n.io et r/n8n sur Reddit</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="resources-section">
+        <div class="resources-title">🔗 Ressources semaine 1</div>
+        <a class="resource-link" href="https://aws.amazon.com/education/awseducate" target="_blank">AWS Educate — inscription étudiant gratuite</a>
+        <a class="resource-link" href="https://education.github.com/pack" target="_blank">GitHub Student Pack — 100+ outils gratuits</a>
+        <a class="resource-link" href="https://academy.n8n.io" target="_blank">n8n Academy — cours officiels gratuits</a>
+        <a class="resource-link" href="https://www.youtube.com/@LeonvanZyl" target="_blank">Leon van Zyl — meilleur créateur n8n YouTube</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Semaine 2 -->
+  <div class="week-card" id="week-2">
+    <div class="week-header" onclick="toggleWeek('week-2')">
+      <span class="week-num">S02</span>
+      <span class="week-title">AWS Certif + n8n + MCP Intro</span>
+      <span class="week-badge badge-soon">À venir</span>
+      <span class="week-progress-mini" id="prog-week-2">0/9</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="week-tasks">
+      <div class="task-group-title">☁️ AWS Cloud Practitioner</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Terminer modules 4 à 6 AWS : Billing, Pricing, Support</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Faire 2 examens blancs AWS (ExamTopics ou Whizlabs — gratuits)</div>
+        <span class="task-tag tag-certif">Certif</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Passer la certification AWS Cloud Practitioner (via voucher AWS Educate)</div>
+        <span class="task-tag tag-certif">Certif</span>
+      </div>
+      <div class="task-group-title">🤖 n8n avancé</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Maîtriser les expressions JavaScript dans n8n (nodes Function et Code)</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Créer un premier workflow avec HTTP Request node (connecter une API externe)</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Construire un workflow de gestion d'erreurs avec retry logic</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-group-title">🔌 MCP — Introduction (bases)</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Lire la documentation officielle MCP : modelcontextprotocol.io/introduction (comprendre client/server/tools)</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Installer le SDK Python MCP : pip install mcp — et lancer le quickstart officiel</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Explorer les serveurs MCP officiels Anthropic sur GitHub (Google Drive, Notion, Slack, GitHub)</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="resources-section">
+        <div class="resources-title">🔗 Ressources semaine 2</div>
+        <a class="resource-link" href="https://www.examtopics.com/exams/amazon/clf-c02/" target="_blank">ExamTopics — QCM AWS gratuits</a>
+        <a class="resource-link" href="https://docs.n8n.io/code/expressions/" target="_blank">n8n Expressions — documentation officielle</a>
+        <a class="resource-link" href="https://n8n.io/workflows/" target="_blank">n8n Templates — 1000+ workflows gratuits</a>
+        <a class="resource-link" href="https://modelcontextprotocol.io/introduction" target="_blank">MCP Documentation officielle — gratuit</a>
+        <a class="resource-link" href="https://github.com/modelcontextprotocol/servers" target="_blank">MCP Servers officiels Anthropic — GitHub</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Semaine 3 -->
+  <div class="week-card" id="week-3">
+    <div class="week-header" onclick="toggleWeek('week-3')">
+      <span class="week-num">S03</span>
+      <span class="week-title">dbt + SQL Avancé</span>
+      <span class="week-badge badge-soon">À venir</span>
+      <span class="week-progress-mini" id="prog-week-3">0/6</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="week-tasks">
+      <div class="task-group-title">🗃️ dbt Analytics Engineer</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">S'inscrire sur dbt Learn (learn.getdbt.com) — cours dbt Fundamentals gratuit</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Terminer modules 1-3 : Sources, Models, Tests dans dbt</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Passer la certification dbt Analytics Engineer (gratuite actuellement)</div>
+        <span class="task-tag tag-certif">Certif</span>
+      </div>
+      <div class="task-group-title">🔢 SQL Avancé</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">30 min/jour sur Leetcode SQL : Window Functions, CTEs, Subqueries</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Cours Mode Analytics SQL (mode.com/sql-tutorial) — gratuit</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Installer Metabase en local (Docker) et connecter une base de données test</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="resources-section">
+        <div class="resources-title">🔗 Ressources semaine 3</div>
+        <a class="resource-link" href="https://learn.getdbt.com" target="_blank">dbt Learn — certification gratuite</a>
+        <a class="resource-link" href="https://leetcode.com/studyplan/top-sql-50/" target="_blank">Leetcode SQL 50 — top questions gratuites</a>
+        <a class="resource-link" href="https://mode.com/sql-tutorial/" target="_blank">Mode Analytics SQL Tutorial — gratuit</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-label">
+    <div class="phase-dot" style="background:var(--accent3)"></div>
+    Phase 2 — IA & Automatisation (S4-S6)
+  </div>
+
+  <!-- Semaine 4 -->
+  <div class="week-card" id="week-4">
+    <div class="week-header" onclick="toggleWeek('week-4')">
+      <span class="week-num">S04</span>
+      <span class="week-title">LangChain + Claude API + MCP Server</span>
+      <span class="week-badge badge-soon">À venir</span>
+      <span class="week-progress-mini" id="prog-week-4">0/9</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="week-tasks">
+      <div class="task-group-title">🧠 LLM Engineering</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Faire le cours "LangChain for LLM Application Development" sur DeepLearning.AI (gratuit)</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Faire le cours "Building Systems with ChatGPT API" sur DeepLearning.AI (gratuit)</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Obtenir clé API Anthropic (Claude) — crédit gratuit disponible au démarrage</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-group-title">🔗 n8n + IA</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Connecter Claude API dans n8n via HTTP Request node</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Construire Projet Portfolio #4 : Pipeline Veille automatique (RSS → Claude → Slack)</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Documenter le projet sur GitHub avec README détaillé</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-group-title">🔌 MCP — Intermédiaire</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Construire ton premier MCP server custom en Python : exposer une API simple (ex: météo ou Google Sheets) comme outil MCP</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Connecter ton MCP server à Claude Desktop et tester en langage naturel</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Lire le blog Anthropic MCP Engineering : comprendre code execution + MCP pour agents</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="resources-section">
+        <div class="resources-title">🔗 Ressources semaine 4</div>
+        <a class="resource-link" href="https://www.deeplearning.ai/short-courses/" target="_blank">DeepLearning.AI Short Courses — tous gratuits</a>
+        <a class="resource-link" href="https://console.anthropic.com" target="_blank">Anthropic Console — clé API Claude</a>
+        <a class="resource-link" href="https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-langchain.lmchatanthropic/" target="_blank">n8n + Anthropic — documentation officielle</a>
+        <a class="resource-link" href="https://modelcontextprotocol.io/quickstart/server" target="_blank">MCP Server Quickstart Python — officiel</a>
+        <a class="resource-link" href="https://www.anthropic.com/engineering/code-execution-with-mcp" target="_blank">Anthropic — Code Execution with MCP</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Semaine 5 -->
+  <div class="week-card" id="week-5">
+    <div class="week-header" onclick="toggleWeek('week-5')">
+      <span class="week-num">S05</span>
+      <span class="week-title">Hugging Face + RAG + MCP Avancé</span>
+      <span class="week-badge badge-soon">À venir</span>
+      <span class="week-progress-mini" id="prog-week-5">0/9</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="week-tasks">
+      <div class="task-group-title">🤗 Hugging Face</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Cours NLP gratuit Hugging Face (huggingface.co/learn/nlp-course) — chapitres 1 à 4</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Obtenir le badge officiel Hugging Face NLP</div>
+        <span class="task-tag tag-certif">Certif</span>
+      </div>
+      <div class="task-group-title">🔍 RAG (Retrieval Augmented Generation)</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Cours "Building and Evaluating Advanced RAG" sur DeepLearning.AI (gratuit)</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Créer compte Pinecone (gratuit) et connecter à n8n</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Construire Projet Portfolio #3 : Agent Support Client (Formulaire → RAG → Réponse auto)</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Publier un post LinkedIn sur le projet construit (première visibilité)</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-group-title">🔌 MCP — Avancé + n8n</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Construire un MCP server TypeScript (plus robuste pour production) — suivre le quickstart TypeScript officiel</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Implémenter l'authentification OAuth dans un MCP server (pattern sécurisé pour clients enterprise)</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Construire Projet MCP Portfolio A : connecter Google Sheets + Gmail + Notion → agent Claude qui interroge en langage naturel</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="resources-section">
+        <div class="resources-title">🔗 Ressources semaine 5</div>
+        <a class="resource-link" href="https://huggingface.co/learn/nlp-course" target="_blank">Hugging Face NLP Course — entièrement gratuit</a>
+        <a class="resource-link" href="https://www.pinecone.io/" target="_blank">Pinecone — base vectorielle gratuite</a>
+        <a class="resource-link" href="https://www.deeplearning.ai/short-courses/building-evaluating-advanced-rag/" target="_blank">DeepLearning.AI RAG Course — gratuit</a>
+        <a class="resource-link" href="https://modelcontextprotocol.io/quickstart/server" target="_blank">MCP Server TypeScript Quickstart — officiel</a>
+        <a class="resource-link" href="https://blog.modelcontextprotocol.io" target="_blank">MCP Blog officiel — annonces et best practices</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Semaine 6 -->
+  <div class="week-card" id="week-6">
+    <div class="week-header" onclick="toggleWeek('week-6')">
+      <span class="week-num">S06</span>
+      <span class="week-title">Make + Airtable + MCP Expert</span>
+      <span class="week-badge badge-soon">À venir</span>
+      <span class="week-progress-mini" id="prog-week-6">0/9</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="week-tasks">
+      <div class="task-group-title">⚙️ Make (ex-Integromat)</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Faire Make Academy complète (academy.make.com) — gratuit</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Construire Projet Portfolio #2 : Reporting automatique (Sheets → Claude → PDF → Email)</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-group-title">🗂️ Airtable</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Créer compte Airtable gratuit + suivre la formation officielle (1-2h)</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Construire Projet Portfolio #1 : Lead Gen Machine (Apify → n8n → Claude → Instantly)</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Construire Projet Portfolio #5 : Automatisation Comptabilité (Gmail → n8n → Claude → Sheets)</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Créer page portfolio GitHub Pages avec les 5 projets documentés</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-group-title">🔌 MCP — Expert + n8n combiné</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Construire Projet MCP Portfolio B : n8n (orchestration) + MCP server (connexions) + Claude (intelligence) → agent autonome bout-en-bout</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Déployer un MCP server remote sur Railway ou Render (gratuit) — passer du local au cloud</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Publier les 2 projets MCP sur GitHub + LinkedIn avec démo vidéo courte (30s screen record)</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="resources-section">
+        <div class="resources-title">🔗 Ressources semaine 6</div>
+        <a class="resource-link" href="https://academy.make.com" target="_blank">Make Academy — certification gratuite</a>
+        <a class="resource-link" href="https://airtable.com/lp/resources" target="_blank">Airtable Resources — formations gratuites</a>
+        <a class="resource-link" href="https://railway.app" target="_blank">Railway — déploiement MCP server gratuit</a>
+        <a class="resource-link" href="https://mcpserverhub.net" target="_blank">MCP Server Hub — inspiration et exemples</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-label">
+    <div class="phase-dot" style="background:var(--done)"></div>
+    Phase 3 — Clients & Revenus (S7-S9)
+  </div>
+
+  <!-- Semaine 7 -->
+  <div class="week-card" id="week-7">
+    <div class="week-header" onclick="toggleWeek('week-7')">
+      <span class="week-num">S07</span>
+      <span class="week-title">Lancement Profil & 1ères Propositions</span>
+      <span class="week-badge badge-soon">À venir</span>
+      <span class="week-progress-mini" id="prog-week-7">0/7</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="week-tasks">
+      <div class="task-group-title">💼 Plateformes freelance</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Créer profil Malt complet : photo, titre, description, 3 offres de service définies</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Créer profil Arc.dev et passer le screening technique</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Créer profil Contra (0% commission) avec portfolio des 5 projets</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-group-title">📣 Acquisition clients</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Contacter 20 anciens étudiants Télécom SudParis sur LinkedIn (message personnalisé)</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Rejoindre groupes Facebook "Automatisation n8n France" et "No-code France"</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Publier 3 posts LinkedIn cette semaine : 1 projet demo, 1 tip automation, 1 parcours personnel</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Envoyer 10 cold emails à des PME ou startups avec une offre d'audit gratuit de 30 min</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Semaine 8 -->
+  <div class="week-card" id="week-8">
+    <div class="week-header" onclick="toggleWeek('week-8')">
+      <span class="week-num">S08</span>
+      <span class="week-title">1ers Contrats + Google Data Engineer</span>
+      <span class="week-badge badge-soon">À venir</span>
+      <span class="week-progress-mini" id="prog-week-8">0/6</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="week-tasks">
+      <div class="task-group-title">💰 Missions freelance</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Répondre à au moins 10 offres sur Malt et Contra chaque jour</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Faire 2 audits gratuits de 30 min pour obtenir premiers témoignages clients</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Livrer et facturer première mission (objectif : 300-500€)</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-group-title">☁️ Google Cloud Certification</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Activer Google Cloud Skills Boost (30 jours gratuits) — inscris-toi maintenant</div>
+        <span class="task-tag tag-certif">Certif</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Commencer le learning path "Data Engineer" sur Google Cloud Skills Boost</div>
+        <span class="task-tag tag-learn">Learn</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Zapier University — certification complète (zapier.com/learn) — gratuite</div>
+        <span class="task-tag tag-certif">Certif</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Semaine 9 -->
+  <div class="week-card" id="week-9">
+    <div class="week-header" onclick="toggleWeek('week-9')">
+      <span class="week-num">S09</span>
+      <span class="week-title">Montée en charge — Objectif 2000€</span>
+      <span class="week-badge badge-soon">À venir</span>
+      <span class="week-progress-mini" id="prog-week-9">0/6</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="week-tasks">
+      <div class="task-group-title">📈 Scaling</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Avoir au moins 2 clients actifs avec missions en cours</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Proposer une offre retainer mensuel (800-1200€/mois) à un client satisfait</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Candidater sur Toptal (sélectif mais 80-150€/h) — screening technique</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-group-title">🚀 Vision long terme</div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Bilan complet : revenus générés, skills acquis, certifications obtenues</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Définir niche spécifique (ex : automatisation pour e-commerce, ou PME finance)</div>
+        <span class="task-tag tag-apply">Apply</span>
+      </div>
+      <div class="task-item" onclick="toggleTask(this)">
+        <div class="task-check"></div>
+        <div class="task-text">Créer plan pour atteindre 5000€/mois — roadmap semaines 10-20</div>
+        <span class="task-tag tag-build">Build</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Motivation bar -->
+  <div class="motivation-bar">
+    <div class="motivation-icon">⚡</div>
+    <div class="motivation-text">
+      <strong id="motivation-msg">Commence aujourd'hui. Pas demain.</strong>
+      <span id="motivation-sub">La procrastination, c'est payer demain les intérêts d'une dette que tu n'as pas contractée. Chaque tâche cochée te rapproche de l'indépendance financière.</span>
+    </div>
+    <button class="today-btn" onclick="jumpToCurrentWeek()">📍 Semaine en cours</button>
+  </div>
+
+</div>
+
+<script>
+  // Storage key
+  const STORAGE_KEY = 'marc_roadmap_tasks';
+
+  // Load saved state
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch(e) { return {}; }
+  }
+
+  function saveState(state) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  }
+
+  let state = loadState();
+
+  // Toggle task
+  function toggleTask(el) {
+    const text = el.querySelector('.task-text').textContent;
+    const key = btoa(encodeURIComponent(text)).substring(0, 20);
+    
+    if (state[key]) {
+      delete state[key];
+      el.classList.remove('done');
+    } else {
+      state[key] = true;
+      el.classList.add('done');
+    }
+    saveState(state);
+    updateStats();
+  }
+
+  // Toggle week
+  function toggleWeek(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('open');
+  }
+
+  // Update stats
+  function updateStats() {
+    const allTasks = document.querySelectorAll('.task-item');
+    const doneTasks = document.querySelectorAll('.task-item.done');
+    const total = allTasks.length;
+    const done = doneTasks.length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+    document.getElementById('stat-done').textContent = done;
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-pct').textContent = pct + '%';
+    document.getElementById('global-bar').style.width = pct + '%';
+
+    // Per-week progress
+    const weeks = ['week-1','week-2','week-3','week-4','week-5','week-6','week-7','week-8','week-9'];
+    weeks.forEach(wid => {
+      const card = document.getElementById(wid);
+      if (!card) return;
+      const wTasks = card.querySelectorAll('.task-item');
+      const wDone = card.querySelectorAll('.task-item.done');
+      const progEl = document.getElementById('prog-' + wid);
+      if (progEl) progEl.textContent = wDone.length + '/' + wTasks.length;
+      if (wDone.length === wTasks.length && wTasks.length > 0) {
+        card.classList.add('completed');
+      } else {
+        card.classList.remove('completed');
+      }
+    });
+
+    // Motivation messages
+    const msgs = [
+      ["Commence aujourd'hui. Pas demain.", "La procrastination, c'est payer demain les intérêts d'une dette que tu n'as pas contractée. Chaque tâche cochée te rapproche de l'indépendance financière."],
+      ["Bien joué, continue !", "Chaque compétence acquise est permanente. Personne ne peut te l'enlever."],
+      ["Tu es dans le top 10% des gens qui passent à l'action.", "La majorité des gens parlent de changer. Toi tu le fais."],
+      ["Plus de la moitié du chemin est fait !", "À ce rythme, les premiers clients arrivent bientôt. Continue."],
+      ["🔥 En route vers les 5000€/mois !", "Tu as presque tout les skills. Il ne reste qu'à vendre. Tu peux le faire."],
+    ];
+    const msgIdx = Math.min(Math.floor(pct / 20), msgs.length - 1);
+    document.getElementById('motivation-msg').textContent = msgs[msgIdx][0];
+    document.getElementById('motivation-sub').textContent = msgs[msgIdx][1];
+  }
+
+  // Restore done states
+  function restoreState() {
+    const tasks = document.querySelectorAll('.task-item');
+    tasks.forEach(el => {
+      const text = el.querySelector('.task-text').textContent;
+      const key = btoa(encodeURIComponent(text)).substring(0, 20);
+      if (state[key]) el.classList.add('done');
+    });
+  }
+
+  // Jump to current (first incomplete) week
+  function jumpToCurrentWeek() {
+    const weeks = ['week-1','week-2','week-3','week-4','week-5','week-6','week-7','week-8','week-9'];
+    for (const wid of weeks) {
+      const card = document.getElementById(wid);
+      if (!card) continue;
+      const wTasks = card.querySelectorAll('.task-item');
+      const wDone = card.querySelectorAll('.task-item.done');
+      if (wDone.length < wTasks.length) {
+        card.classList.add('open');
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        break;
+      }
+    }
+  }
+
+  // Open week 1 by default
+  document.getElementById('week-1').classList.add('open');
+
+  // Init
+  restoreState();
+  updateStats();
+
+  // Animate progress bar on load
+  setTimeout(() => {
+    const total = document.querySelectorAll('.task-item').length;
+    const done = document.querySelectorAll('.task-item.done').length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    document.getElementById('global-bar').style.width = pct + '%';
+  }, 300);
+</script>
+
+</body>
+</html>
